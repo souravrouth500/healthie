@@ -9,6 +9,8 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import { IPlan } from '@/typescript/interface/pages/insuranceDetail.interface';
 import CheckIcon from '@mui/icons-material/Check';
+import { Box, Button, Stack } from '@mui/material';
+import { useAddtoCart } from '@/api/hooks/cart/hooks';
 
 
 const Accordion = styled((props: AccordionProps) => (
@@ -52,32 +54,53 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 function CustomAccordions({ data }: { data: any[] }) {
 
     const [expanded, setExpanded] = React.useState<string | false>('panel1');
+    const {mutate} = useAddtoCart()
 
     const handleChange =
         (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
             setExpanded(newExpanded ? panel : false);
         };
 
+        const handleAddToCart = (item: IPlan) => {
+            mutate({
+                insurance_id: item.insurance_id,
+                insurance_plans_id: item.id,
+                insurance_add_ons_id: null
+              })
+        }
+        
+
     return (
         <>
             {
                 data.map((item: IPlan, index: number) => {
                     return (
-                        <Accordion expanded={expanded === `panel${index+1}`} onChange={handleChange(`panel${index+1}`)} key={index} sx={{letterSpacing: '2px', lineHeight: '2'}}>
+                        <Accordion expanded={expanded === `panel${index + 1}`} onChange={handleChange(`panel${index + 1}`)} key={index} sx={{ letterSpacing: '2px', lineHeight: '2' }}>
                             <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
                                 <Typography>{item.plan_name}</Typography>
                                 <Typography>{item.short_desc}</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <p dangerouslySetInnerHTML={{__html: item.policy_details}} style={{color: 'black'}}/>
-                                <Typography variant='h4'>Plan Benefits</Typography>
-                                {
-                                    item.benifit_array.map((benefit:string, index:number) => {
-                                        return (
-                                            <Typography variant='body2' key={index} sx={{lineHeight: '2'}}><CheckIcon sx={{fontSize: '16px', verticalAlign: 'middle', mr: 1}}/>{benefit}</Typography>
-                                        )
-                                    })
-                                }
+                                <Stack direction={'row'} justifyContent={'space-between'}>
+                                    <Box>
+                                        <p dangerouslySetInnerHTML={{ __html: item.policy_details }} style={{ color: 'black' }} />
+                                        <Typography variant='h4'>Plan Benefits</Typography>
+                                        {
+                                            item.benifit_array.map((benefit: string, index: number) => {
+                                                return (
+                                                    <Typography variant='body2' key={index} sx={{ lineHeight: '2' }}><CheckIcon sx={{ fontSize: '16px', verticalAlign: 'middle', mr: 1 }} />{benefit}</Typography>
+                                                )
+                                            })
+                                        }
+                                    </Box>
+                                    <Stack justifyContent={'space-between'}>
+                                        <Box>
+                                        <Typography variant='h4'>Plans Price</Typography>
+                                        <Typography variant='h2' fontWeight={'bold'}>{`$${item.price}/${item.price_type}`}</Typography>
+                                        </Box>
+                                        <Button variant='contained' onClick={() => handleAddToCart(item)}>Add </Button>
+                                    </Stack>
+                                </Stack>
                             </AccordionDetails>
                         </Accordion>
                     )

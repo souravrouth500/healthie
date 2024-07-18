@@ -1,4 +1,4 @@
-import { useTestimonial } from '@/api/hooks/cms/hooks/useTestimonials'
+import { useTestimonial } from '@/api/hooks/testmonial/hooks';
 import { Wrapper } from '@/layout/wrapper/wrapper';
 import { TestimonialItem } from '@/typescript/interface/pages/testimonials';
 import { Avatar, Box, Grid, Paper, Typography } from '@mui/material';

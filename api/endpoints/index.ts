@@ -25,6 +25,9 @@ export const endpoints = {
         insuranceList: "insurances",
         categories: "categories",
         myInsurances: "my-insurances",
+        addToCart: "cart-add-update",
+        cart: "carts",
+        resetCart: "empty-cart",
         contactUs: "contact-us"
     }
 };

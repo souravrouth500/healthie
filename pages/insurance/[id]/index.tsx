@@ -1,4 +1,5 @@
-import { useInsuranceDetails } from '@/api/hooks/cms/hooks/useInsuranceDetails'
+
+import { useInsuranceDetails } from '@/api/hooks/insurance/hooks'
 import CustomAccordions from '@/components/accordion'
 import { Wrapper } from '@/layout/wrapper/wrapper'
 import { IInsuranceDetails } from '@/typescript/interface/pages/insuranceDetail.interface'
@@ -43,7 +44,7 @@ function InsuranceDetails() {
                             <Divider />
                             <Box my={2}>
                             <Typography variant='h3'>Benefits</Typography>
-                            <ol>
+                            <ul>
                             {
                                 insuranceDetails?.benifit_array?.map((item, index) => {
                                     return (
@@ -51,10 +52,10 @@ function InsuranceDetails() {
                                     )
                                 })
                             }
-                            </ol>
+                            </ul>
                             </Box>
                             <Box>
-                                <Typography component={'h2'} variant='h4'>Our Plans</Typography>
+                                <Typography component={'h2'} variant='h4' my={2} fontWeight={'bolder'}>Our Plans</Typography>
                                 {insuranceDetails && <CustomAccordions data={insuranceDetails?.plans} />}
                             </Box>
                         </Grid>

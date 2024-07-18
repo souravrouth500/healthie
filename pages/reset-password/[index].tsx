@@ -17,8 +17,8 @@ import { CustomError } from '@/typescript/interface/apiresp.interfaces';
 import { forgotPassword, loginMutation, resetPassword } from '@/api/functions/user.api';
 import { useAppDispatch } from '@/api/redux/useAppDispatch';
 import { useRouter } from 'next/router';
-import { useResetPassword } from '@/api/hooks/user/hooks/useResetPassword';
 import { useSearchParams } from 'next/navigation';
+import { useResetPassword } from '@/api/hooks/user/hooks';
 
 function Copyright(props: any) {
     return (

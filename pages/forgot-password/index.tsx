@@ -26,7 +26,7 @@ import { setCookie } from 'nookies';
 import { useAppDispatch } from '@/api/redux/useAppDispatch';
 import { setLoginData } from '@/redux-toolkit/slices/userSlice';
 import { useRouter } from 'next/router';
-import { useForgotPassword } from '@/api/hooks/user/hooks/useForgotPassword';
+import { useForgotPassword } from '@/api/hooks/user/hooks';
 
 function Copyright(props: any) {
     return (

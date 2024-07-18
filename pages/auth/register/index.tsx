@@ -22,8 +22,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { IFormInput } from '@/typescript/interface/common.interface';
 import { userSchema } from '@/lib/yup/validationSchema';
 import { Wrapper } from '@/layout/wrapper/wrapper';
-import { useRegister } from '@/api/hooks/user/hooks/useRegister';
 import { LoadingButton } from '@mui/lab';
+import { useRegister } from '@/api/hooks/user/hooks';
 
 
 function Copyright(props: any) {

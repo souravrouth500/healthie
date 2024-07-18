@@ -21,7 +21,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { contactSchema } from '@/lib/yup/validationSchema';
 import { toast } from 'sonner';
 import { CustomError } from '@/typescript/interface/apiresp.interfaces';
-import { useContact } from '@/api/hooks/cms/hooks/useContact';
+import { useContact } from '@/api/hooks/contactus/hooks';
 
 function Copyright(props: any) {
     return (

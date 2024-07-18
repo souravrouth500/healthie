@@ -11,8 +11,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import XIcon from '@mui/icons-material/X';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { AboutusTeamDetail, DetailedBenifit, Usp } from '@/typescript/interface/apiresp.interfaces';
-import { usePageContent } from '@/api/hooks/cms/hooks/usePageContent';
 import Loading from '@/components/loading';
+import { usePageContent } from '@/api/hooks/home/hooks';
 
 
 function Home() {

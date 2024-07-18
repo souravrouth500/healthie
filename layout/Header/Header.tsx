@@ -19,7 +19,10 @@ import { logout } from '@/redux-toolkit/slices/userSlice';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '@/api/redux/useAppSelector';
 import { toast } from 'sonner';
-import { useHeaderLogo } from '@/api/hooks/cms/hooks/useHeaderLogo';
+import { useHeaderLogo } from '@/api/hooks/header/hooks';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useCart } from '@/api/hooks/cart/hooks';
+import { Badge } from '@mui/material';
 
 // const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -27,6 +30,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [cartItems, setCartItems] = React.useState<number | null>(null)
   const { userData, isLoggedIn } = useAppSelector(state => state.userSlice)
   const dispatch = useAppDispatch();
   const router = useRouter()
@@ -62,6 +66,10 @@ function Header() {
     {
       name: 'register',
       path: '/auth/register'
+    },
+    {
+      name: 'cart',
+      path: '/cart'
     }
   ];
 
@@ -90,6 +98,10 @@ function Header() {
       name: 'logout',
       path: '/auth/login'
     },
+    {
+      name: 'cart',
+      path: '/cart'
+    }
   ]
 
   let pages = initialPages;
@@ -97,15 +109,22 @@ function Header() {
   console.log(isLoggedIn);
 
   const headerLogo = useHeaderLogo()
-  console.log('headerlogo', headerLogo);
+  // console.log('headerlogo', headerLogo);
 
-
+  const cart = useCart()
 
   const handleLogout = () => {
     dispatch(logout());
     toast.success('Logged out successfully');
     router.push('/auth/login')
   }
+
+  // console.log("header", cart.data?.data?.data?.userCarts?.length);
+
+  React.useEffect(() => {
+    setCartItems(cart.data?.data?.data?.userCarts?.length)
+  }, [cart])
+
 
   return (
     <AppBar position="static" sx={{ bgcolor: 'hsl(231deg 76.56% 41.08%)' }}>
@@ -146,7 +165,9 @@ function Header() {
             >
               {pages.map((page) => (
                 <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                  <Link href={page.path} onClick={() => page.name.toLowerCase() === "logout" && handleLogout()} style={{textDecoration: 'none', textTransform: 'capitalize'}}><Typography textAlign="center">{page.name}</Typography></Link>
+                  <Link href={page.path} onClick={() => page.name.toLowerCase() === "logout" && handleLogout()} style={{ textDecoration: 'none', textTransform: 'capitalize' }}><Typography textAlign="center">{page.name.toLowerCase() === 'cart' ? (
+                    <Box bgcolor={'#303F9F'} px={2} py={1} sx={{ position: 'relative' }}> Cart  <Badge badgeContent={cartItems} color="primary"><ShoppingCartIcon /></Badge> </Box>
+                  ) : page.name}</Typography></Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -154,7 +175,7 @@ function Header() {
           <Box sx={{ display: { xs: 'flex', md: 'none', }, mr: 1 }}>
             <img src={`${headerLogo}`} alt="" style={{ height: '30px' }} />
           </Box>
-        
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end' }}>
             {pages.map((page) => (
               <Button
@@ -162,7 +183,9 @@ function Header() {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                <Link href={page.path} onClick={() => page.name.toLowerCase() === "logout" && handleLogout()} style={{textDecoration: 'none', color: 'white'}}>{page.name}</Link>
+                <Link href={page.path} onClick={() => page.name.toLowerCase() === "logout" && handleLogout()} style={{ textDecoration: 'none', color: 'white' }}>{page.name.toLowerCase() === 'cart' ? (
+                  <Box bgcolor={'#303F9F'} px={2} py={1} sx={{ position: 'relative' }}> Cart  <Badge badgeContent={cartItems} color="primary"><ShoppingCartIcon /></Badge> </Box>
+                ) : page.name}</Link>
               </Button>
             ))}
           </Box>

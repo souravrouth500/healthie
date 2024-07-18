@@ -3,7 +3,7 @@ import { Wrapper } from '@/layout/wrapper/wrapper';
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import { Container, Grid, Paper, Stack, Typography } from '@mui/material';
-import { useUser } from '@/api/hooks/user/hooks/useUser';
+import { useUser } from '@/api/hooks/user/hooks';
 
 function Dashboard() {
 
