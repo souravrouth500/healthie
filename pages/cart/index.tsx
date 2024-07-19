@@ -1,4 +1,4 @@
-import { useCart, useResetCart } from '@/api/hooks/cart/hooks'
+import { useCart, useRemoveFromCart, useResetCart } from '@/api/hooks/cart/hooks'
 import { Wrapper } from '@/layout/wrapper/wrapper';
 import { InsuranceOBj } from '@/typescript/interface/pages/insuranceList.interface';
 import CheckIcon from '@mui/icons-material/Check';
@@ -10,29 +10,40 @@ import { resetCart } from '@/api/hooks/cart/functions';
 
 function Cart() {
 
-  const [cartData, setCartData] = useState<InsuranceOBj[] | null>(null);
-  const [insurancePlan, setInsurancePlan] = useState(0);
-  const queryClient = useQueryClient ()
+    const [cartData, setCartData] = useState<InsuranceOBj[] | null | undefined>(null);
+    const [insurancePlan, setInsurancePlan] = useState(0);
+    const queryClient = useQueryClient()
 
-  const { data: cartRes } = useCart()
-  const handleResetCart = () => {
-    resetCart()
-    queryClient.invalidateQueries({
-      queryKey: ['fetchCart'],
-    })
-  }
+    const { data: cartRes } = useCart()
+    const resetCart = useResetCart()
+    const removeItem = useRemoveFromCart()
+    const handleResetCart = () => {
+        resetCart.mutate()
+    }
 
-  console.log("ac", cartRes);
-  
-  console.log("cartdata",cartData);
+    const handleRemoveItem = (id: string) => {
+        removeItem.mutate(id)
+    }
 
-  useEffect(() => {
-    setCartData(cartRes?.data?.data?.userCarts)
-  }, [cartRes])
+    console.log("ac", cartRes);
 
-  return (
-    <div>
-      <Wrapper>
+    console.log("cartdata", cartData);
+
+    useEffect(() => {
+        setCartData(cartRes?.data?.data?.userCarts)
+    }, [cartRes])
+
+    // if(cartData === undefined) {
+    //     return (
+    //         <Wrapper>
+    //             <Typography variant='h3'>Your cart is empty</Typography>
+    //         </Wrapper>
+    //     )
+    // }
+
+    return (
+        <div>
+            <Wrapper>
                 <Container maxWidth={'lg'}>
 
                     {/* filters */}
@@ -41,46 +52,51 @@ function Cart() {
                         <Typography variant='h4' sx={{ borderLeft: '4px solid #3F51B5', pl: 1, color: '#303F9F', fontWeight: 'bold' }}>{`${insuranceList?.length} plans found`}</Typography>
                     </Box> */}
 
-                            <Grid container >
-                                {
-                                    cartData?.map((item: any) => {
-                                        return (
-                                            <Grid item xs={12} key={item.insurance_name} py={2}>
-                                                <Paper elevation={1} sx={{ borderRadius: '14px', letterSpacing: '1.5px', padding: '10px 8px', position: 'relative' }}>
-                                                  <Button sx={{position: 'absolute', top: 10, right: 2, borderRadius: '50%'}}><ClearIcon /></Button>
-                                                    <Box display={'flex'} alignItems={'center'} gap={2} my={1}>
-                                                        <img src={item?.insurance?.company_logo_path} alt={item?.company_logo_path} style={{ height: 70, width: 70, objectFit: 'contain' }} />
-                                                        <Box>
-                                                            <Typography variant='h4' fontWeight={'bolder'} color={'#1A237E'}>{item?.insurance?.insurance_name}</Typography>
-                                                            <Typography variant='body2'>{item?.insurance?.short_desc}</Typography>
-                                                        </Box>
-                                                    </Box>
-                                                    <Stack direction={'row'} justifyContent={'space-between'} sx={{ px: { xs: 1, sm: '80px' } }}>
+                    <Grid container >
+                        {
+                            cartData?.map((item: any) => {
+                                return (
+                                    <Grid item xs={12} key={item.insurance_name} py={2}>
+                                        <Paper elevation={1} sx={{ borderRadius: '14px', letterSpacing: '1.5px', padding: '10px 8px', position: 'relative' }}>
+                                            <Button sx={{ position: 'absolute', top: 10, right: 2, borderRadius: '50%' }} onClick={() => handleRemoveItem(item.id)}><ClearIcon /></Button>
+                                            <Stack direction={'row'} justifyContent={'space-between'}>
+                                            <Box display={'flex'} alignItems={'center'} gap={2} my={1}>
+                                                <img src={item?.insurance?.company_logo_path} alt={item?.company_logo_path} style={{ height: 70, width: 70, objectFit: 'contain' }} />
+                                                <Box>
+                                                    <Typography variant='h4' fontWeight={'bolder'} color={'#1A237E'}>{item?.insurance?.insurance_name}</Typography>
+                                                    <Typography variant='body2'>{item?.insurance?.short_desc}</Typography>
+                                                </Box>
+                                            </Box>
 
-                                                        <Box>
-                                                            <Typography variant='body1'>Benefits</Typography>
-                                                            {
-                                                                item?.insurance_plan?.benifit_array?.map((item: string, index: number) => {
-                                                                    return (
-                                                                        <Typography variant='body2' key={index} color={'black'} lineHeight={2}> <CheckIcon sx={{ fontSize: '12px', color: '#3F51B5', verticalAlign: 'middle' }} /> {item}</Typography>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </Box>
-                                                    </Stack>
-                                                </Paper>
-                                            </Grid>
-                                        )
-                                    })
-                                }
+                                            <Typography variant='h4' my={1} mr={6}>{item?.insurance_plan?.plan_name}</Typography>
 
-                            </Grid>
+                                            </Stack>
+                                            <Stack direction={'row'} justifyContent={'space-between'} sx={{ px: { xs: 1, sm: '80px' } }}>
 
-                            <Button variant='contained' onClick={() => handleResetCart()}>Clear Cart</Button>
+                                                <Box>
+                                                    <Typography variant='body1'>Benefits</Typography>
+                                                    {
+                                                        item?.insurance_plan?.benifit_array?.map((item: string, index: number) => {
+                                                            return (
+                                                                <Typography variant='body2' key={index} color={'black'} lineHeight={2}> <CheckIcon sx={{ fontSize: '12px', color: '#3F51B5', verticalAlign: 'middle' }} /> {item}</Typography>
+                                                            )
+                                                        })
+                                                    }
+                                                </Box>
+                                            </Stack>
+                                        </Paper>
+                                    </Grid>
+                                )
+                            })
+                        }
+
+                    </Grid>
+
+                    <Button variant='contained' onClick={() => handleResetCart()}>Clear Cart</Button>
                 </Container>
             </Wrapper>
-    </div>
-  )
+        </div>
+    )
 }
 
 export default Cart

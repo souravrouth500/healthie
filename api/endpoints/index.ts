@@ -28,6 +28,11 @@ export const endpoints = {
         addToCart: "cart-add-update",
         cart: "carts",
         resetCart: "empty-cart",
+        removeFromCart: "remove-from-cart",
+        sessionAddToCart: "add-to-cart-session",
+        sessionCart: "get-session-carts",
+        sessionRemoveCart: "remove-product-session",
+        stateList: "state-lists",
         contactUs: "contact-us"
     }
 };

@@ -24,7 +24,7 @@ export interface ICategory {
 }
 
 export interface IInsuranceCategoryParams {
-    state_slug: string | null;
+    state_slug: string | string[] | null;
     category_slug: string | string[] | null;
     category_ids: string | string[] | null;
   }

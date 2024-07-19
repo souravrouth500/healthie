@@ -21,8 +21,10 @@ import { useAppSelector } from '@/api/redux/useAppSelector';
 import { toast } from 'sonner';
 import { useHeaderLogo } from '@/api/hooks/header/hooks';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useCart } from '@/api/hooks/cart/hooks';
+import { useCart, useSessionCart } from '@/api/hooks/cart/hooks';
 import { Badge } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { parseCookies } from 'nookies';
 
 // const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -30,8 +32,9 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const [cartItems, setCartItems] = React.useState<number | null>(null)
+  const [cartItems, setCartItems] = React.useState<number>(0)
   const { userData, isLoggedIn } = useAppSelector(state => state.userSlice)
+  const queryClient = useQueryClient()
   const dispatch = useAppDispatch();
   const router = useRouter()
 
@@ -54,6 +57,10 @@ function Header() {
     {
       name: 'home',
       path: '/'
+    },
+    {
+      name: 'insurances',
+      path: '/insurance'
     },
     {
       name: 'contact us',
@@ -106,28 +113,44 @@ function Header() {
 
   let pages = initialPages;
   if (isLoggedIn) { pages = authPages }
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
 
   const headerLogo = useHeaderLogo()
   // console.log('headerlogo', headerLogo);
-
+  const cookies = parseCookies()
   const cart = useCart()
+  const sessionCart = useSessionCart(cookies[process.env.NEXT_PUBLIC_SESSIONID_NAME!])
+
+  // let cart:any;
+  // if(isLoggedIn){
+  //   cart = loginCart
+  // } else {
+  //   cart = sessionCart.data
+  // }
+
+  // console.log(loginCart);
+  
 
   const handleLogout = () => {
     dispatch(logout());
     toast.success('Logged out successfully');
+    queryClient.invalidateQueries({
+      queryKey: ['fetchCart'],
+    });
     router.push('/auth/login')
   }
 
   // console.log("header", cart.data?.data?.data?.userCarts?.length);
 
   React.useEffect(() => {
+    // console.log('lrnght',cart.data?.data);
     setCartItems(cart.data?.data?.data?.userCarts?.length)
-  }, [cart])
+    !isLoggedIn && setCartItems(0)
+  }, [cart, sessionCart, handleLogout])
 
 
   return (
-    <AppBar position="static" sx={{ bgcolor: 'hsl(231deg 76.56% 41.08%)' }}>
+    <AppBar position="fixed" sx={{ bgcolor: 'hsl(231deg 76.56% 41.08%)' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>

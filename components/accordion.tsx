@@ -10,7 +10,9 @@ import Typography from '@mui/material/Typography';
 import { IPlan } from '@/typescript/interface/pages/insuranceDetail.interface';
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Button, Stack } from '@mui/material';
-import { useAddtoCart } from '@/api/hooks/cart/hooks';
+import { useAddtoCart, useSessionAddtoCart } from '@/api/hooks/cart/hooks';
+import { useAppSelector } from '@/api/redux/useAppSelector';
+import { parseCookies } from 'nookies';
 
 
 const Accordion = styled((props: AccordionProps) => (
@@ -54,7 +56,9 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 function CustomAccordions({ data }: { data: any[] }) {
 
     const [expanded, setExpanded] = React.useState<string | false>('panel1');
-    const {mutate} = useAddtoCart()
+    const { isLoggedIn } = useAppSelector(state => state.userSlice)
+    const addToCart = useAddtoCart()
+    const sessionAddtoCart = useSessionAddtoCart()
 
     const handleChange =
         (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -62,11 +66,21 @@ function CustomAccordions({ data }: { data: any[] }) {
         };
 
         const handleAddToCart = (item: IPlan) => {
-            mutate({
-                insurance_id: item.insurance_id,
-                insurance_plans_id: item.id,
-                insurance_add_ons_id: null
-              })
+            if(isLoggedIn){
+                addToCart.mutate({
+                    insurance_id: item.insurance_id,
+                    insurance_plans_id: item.id,
+                    insurance_add_ons_id: null
+                  })
+            } else {
+                const cookies = parseCookies()
+                sessionAddtoCart.mutate({
+                    uuid: cookies[process.env.NEXT_PUBLIC_SESSIONID_NAME!],
+                    insurance_id: item.insurance_id,
+                    insurance_plans_id: item.id,
+                    insurance_add_ons_id: null
+                  })
+            }
         }
         
 

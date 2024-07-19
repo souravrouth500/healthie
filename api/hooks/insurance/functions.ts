@@ -25,3 +25,9 @@ export const fetchInsuranceCategories = async () => {
     return res;
 }
 
+export const fetchStateLists = async () => {
+    const res = await axiosInstance.get(
+        endpoints.cms.stateList
+    )
+    return res;
+}

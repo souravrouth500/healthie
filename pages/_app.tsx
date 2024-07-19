@@ -29,7 +29,7 @@ export default function CustomApp({ Component, pageProps }: AppProps) {
         <QueryClientProvider client={queryClient}>
           <MuiThemeProvider>
             {/* <CssBaseline /> */}
-            <Toaster richColors position="bottom-left" />
+            <Toaster richColors position="top-center" />
             <Component {...pageProps} />
           </MuiThemeProvider>
         </QueryClientProvider>

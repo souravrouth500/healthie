@@ -11,7 +11,7 @@ export const Wrapper = (props: wrapperProps) => {
   return (
     <>
     <Header />
-    <main>{children}</main>
+    <main style={{marginTop: '100px'}}>{children}</main>
     </>
   )
 }

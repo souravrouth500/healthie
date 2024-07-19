@@ -1,16 +1,25 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { fetchInsuranceCategories, fetchInsuranceDetails, fetchInsuranceList } from "./functions"
+import { fetchInsuranceCategories, fetchInsuranceDetails, fetchInsuranceList, fetchStateLists } from "./functions"
 import { IInsuranceCategoryParams } from "@/typescript/interface/pages/InsuranceCategory.interface"
 
-export const useInsuranceList = () => {
+// export const useInsuranceList = () => {
 
-    // const mutation = useQuery({
-    //     queryKey: ['fetchInsuranceList'],
-    //     queryFn: () => fetchInsuranceList()
-    // })
-    const mutation = useMutation({
-        mutationKey: ['insuranceList'],
-        mutationFn: (body:IInsuranceCategoryParams) => fetchInsuranceList(body)
+//     // const mutation = useQuery({
+//     //     queryKey: ['fetchInsuranceList'],
+//     //     queryFn: () => fetchInsuranceList()
+//     // })
+//     const mutation = useMutation({
+//         mutationKey: ['insuranceList'],
+//         mutationFn: (body:IInsuranceCategoryParams) => fetchInsuranceList(body)
+//     })
+//     return mutation
+// }
+
+export const useInsuranceList = (body: IInsuranceCategoryParams) => {
+
+    const mutation = useQuery({
+        queryKey: ['fetchInsuranceList', body],
+        queryFn: () => fetchInsuranceList(body)
     })
     return mutation
 }
@@ -29,4 +38,11 @@ export const useInsuranceCategories = () => {
         queryFn: () => fetchInsuranceCategories()
     })
     return mutation;
+}
+
+export const useStateLists = () => {
+    return useQuery({
+        queryKey: ['getStateLists'],
+        queryFn: () => fetchStateLists()
+    })
 }
