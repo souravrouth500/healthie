@@ -16,6 +16,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/loading.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/loading.js", "pages/insurance/index2"],
   "exclude": ["node_modules"]
 }

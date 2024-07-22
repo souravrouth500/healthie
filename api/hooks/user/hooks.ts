@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { IFormInput } from "@/typescript/interface/common.interface"
 import { toast } from "sonner"
 import { CustomError } from "@/typescript/interface/apiresp.interfaces"
@@ -12,24 +12,24 @@ export const useRegister = () => {
 
     const mutation = useMutation({
         mutationKey: ['userRegister'],
-        mutationFn: (body:IFormInput) => signUpMuation(body),
+        mutationFn: (body: IFormInput) => signUpMuation(body),
         onSuccess: (response) => {
             console.log(response);
             if (response?.data) {
-            //   setLoginData(response.data.data); // Assuming setLoginData updates Redux state
-              toast.success(response.data.message); // Display success message
-              setCookie(null, 'token', response.data.token, {
-                maxAge: 30 * 24 * 60 * 60,
-                path: '/',
-              }); // Set cookie for token
-              // Additional logic can be added here
+                //   setLoginData(response.data.data); // Assuming setLoginData updates Redux state
+                toast.success(response.data.message); // Display success message
+                setCookie(null, 'token', response.data.token, {
+                    maxAge: 30 * 24 * 60 * 60,
+                    path: '/',
+                }); // Set cookie for token
+                // Additional logic can be added here
             }
-          },
-          onError: (error: CustomError) => {
+        },
+        onError: (error: CustomError) => {
             console.error('Login mutation error:', error);
             // Handle error logic as needed
             toast.error(error?.response?.data?.message)
-          },
+        },
     })
 
     return mutation
@@ -41,26 +41,26 @@ export const useLogin = () => {
     const router = useRouter()
     const mutation = useMutation({
         mutationKey: ['userLogin'],
-        mutationFn: (body:IFormInput) => signInMutation(body),
+        mutationFn: (body: IFormInput) => signInMutation(body),
         onSuccess: (response) => {
             console.log(response);
             if (response?.data) {
-              dispatch(setLoginData(response.data.data)); // Assuming setLoginData updates Redux state
-              toast.success(response.data.message); // Display success message
-              setCookie(null, process.env.NEXT_PUBLIC_TOKEN_NAME!, response.data.token, {
-                maxAge: 30 * 24 * 60 * 60,
-                path: '/',
-              }); // Set cookie for token
-              // Additional logic can be added here
-              // window.location.href = '/'
-              router.push('/')
+                dispatch(setLoginData(response.data.data)); // Assuming setLoginData updates Redux state
+                toast.success(response.data.message); // Display success message
+                setCookie(null, process.env.NEXT_PUBLIC_TOKEN_NAME!, response.data.token, {
+                    maxAge: 30 * 24 * 60 * 60,
+                    path: '/',
+                }); // Set cookie for token
+                // Additional logic can be added here
+                // window.location.href = '/'
+                router.push('/')
             }
-          },
-          onError: (error: CustomError) => {
+        },
+        onError: (error: CustomError) => {
             console.error('Login mutation error:', error);
             // Handle error logic as needed
             toast.error(error?.response?.data?.message)
-          },
+        },
     })
 
     return mutation
@@ -87,7 +87,7 @@ export const useResetPassword = () => {
 
     const mutation = useMutation({
         mutationKey: ['resetPassword'],
-        mutationFn: (body:IFormInput) => resetPassword(body),
+        mutationFn: (body: IFormInput) => resetPassword(body),
         onSuccess: (res) => {
             toast.success(res?.data?.message)
             window.location.href = '/auth/login'
@@ -101,13 +101,19 @@ export const useResetPassword = () => {
 }
 
 export const useUpdateProfile = () => {
+    const queryClient = useQueryClient()
     const mutation = useMutation({
         mutationKey: ['updateProfile'],
-        mutationFn: (body:IFormInput) => updateProfile(body),
+        mutationFn: (body: IFormInput) => updateProfile(body),
         onSuccess: (res) => {
-            toast.success(res?.data?.message)
+            console.log('updateProfile', res);
+            toast.success(res?.data?.message);
+            queryClient.invalidateQueries({
+                queryKey: ['get-profile']
+            })
         },
         onError: (error: CustomError) => {
+            console.log(updateProfile, error);
             toast.error(error?.response?.data?.message)
         }
     })

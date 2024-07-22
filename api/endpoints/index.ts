@@ -34,6 +34,10 @@ export const endpoints = {
         sessionRemoveCart: "remove-product-session",
         stateList: "state-lists",
         contactUs: "contact-us"
+    },
+    support: {
+        createTicket: 'create-new-ticket',
+        myTickets: 'my-tickets',
     }
 };
 

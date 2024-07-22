@@ -99,7 +99,7 @@ function Header() {
     },
     {
       name: 'profile',
-      path: '/dashboard/profile'
+      path: '/dashboard'
     },
     {
       name: 'logout',
