@@ -134,9 +134,12 @@ function Header() {
   const handleLogout = () => {
     dispatch(logout());
     toast.success('Logged out successfully');
-    queryClient.invalidateQueries({
-      queryKey: ['fetchCart'],
-    });
+    // queryClient.invalidateQueries({
+    //   queryKey: ['fetchCart'],
+    // });
+  //   queryClient.invalidateQueries({
+  //     queryKey: ['getProfiles']
+  // })
     router.push('/auth/login')
   }
 
